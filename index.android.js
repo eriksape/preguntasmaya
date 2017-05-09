@@ -1,53 +1,70 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
-import React, { Component } from 'react';
+import React from 'react'
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+    StyleSheet,
+    Text,
+    View,
+    AppRegistry,
+} from 'react-native'
+import { Provider } from 'react-redux'
+import configureStore from './src/store'
 
-export default class quiz extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
-    );
-  }
+import { NativeRouter, Route } from 'react-router-native'
+import Home from './src/containers/Home';
+import Quiz from './src/containers/Quiz';
+import Resultado from './src/containers/Resultado';
+
+
+const HomeComponent = () => (
+    <Home />
+);
+
+const QuizComponent = ({ match }) => (
+    <Quiz idQuiz={match.params.id} />
+);
+
+
+class App extends React.Component {
+    render(){
+
+        const store = configureStore({});
+        return (
+            <Provider store={store}>
+                <NativeRouter>
+                    <View style={styles.container}>
+                        <Route exact path="/" component={HomeComponent}/>
+                        <Route path="/quiz/:id" component={QuizComponent}/>
+                        <Route exact path="/resultado" component={Resultado}/>
+                    </View>
+                </NativeRouter>
+            </Provider>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    container: {
+        marginTop: 25,
+        padding: 10,
+    },
+    header: {
+        fontSize: 20,
+    },
+    nav: {
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    navItem: {
+        flex: 1,
+        alignItems: 'center',
+        padding: 10,
+    },
+    subNavItem: {
+        padding: 5,
+    },
+    topic: {
+        textAlign: 'center',
+        fontSize: 15,
+    }
 });
 
-AppRegistry.registerComponent('quiz', () => quiz);
+AppRegistry.registerComponent('quiz', () => App);
